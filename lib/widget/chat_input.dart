@@ -14,7 +14,7 @@ class _ChatInputState extends State<ChatInput> {
       borderSide: BorderSide(color: Colors.transparent));
   String message = "";
   void _sendMessage() async {
-    final user = await FirebaseAuth.instance.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
     final userName =
         await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
 

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app/screens/auth_screen.dart';
 import 'package:firebase_app/screens/intro_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +9,6 @@ import 'screens/chat.dart';
 bool isFirst;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Widget screen = MyApp();
 
   await Firebase.initializeApp();
   SharedPreferences pref = await SharedPreferences.getInstance();
