@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/chat.dart';
 
-bool isFirst;
+// bool isFirst;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
-  SharedPreferences pref = await SharedPreferences.getInstance();
-  isFirst = pref.getBool('first');
+  // SharedPreferences pref = await SharedPreferences.getInstance();
+  // isFirst = pref.getBool('first');
 
   runApp(MyApp());
 }
@@ -27,18 +27,16 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: isFirst == null || !isFirst
-          ? IntroScreen()
-          : StreamBuilder(
-              stream: FirebaseAuth.instance.authStateChanges(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return ChatingScreen();
-                } else {
-                  return AuthScreen();
-                }
-              },
-            ),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ChatingScreen();
+          } else {
+            return AuthScreen();
+          }
+        },
+      ),
     );
   }
 }

@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_app/screens/chat.dart';
 import 'package:firebase_app/widget/auth_form.dart';
+import 'package:firebase_app/widget/user_image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 enum AuthType {
@@ -10,10 +15,10 @@ enum AuthType {
 }
 
 class AuthScreen extends StatefulWidget {
-  final AuthType authType;
+  AuthType authType;
 
   AuthScreen({
-    this.authType,
+    this.authType = AuthType.register,
   });
 
   @override
@@ -22,12 +27,18 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   bool _isLoading = false;
-  Future<void> loginRegister({
+  File _userPickedImage;
+  void _pickedImage(File pickedImage) {
+    _userPickedImage = pickedImage;
+  }
+
+  Future<void> _submitAuthForm({
     String email,
     String password,
     String userName,
     AuthType authType,
     BuildContext context,
+    File image,
   }) async {
     UserCredential userCredential;
     String message;
@@ -40,18 +51,25 @@ class _AuthScreenState extends State<AuthScreen> {
           email: email,
           password: password,
         );
-      } else {
+      } else if (authType == AuthType.register) {
         userCredential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('user_image')
+            .child(userCredential.user.uid + 'jpg');
+        await ref.putFile(image);
+        final url = await ref.getDownloadURL();
         await FirebaseFirestore.instance
             .collection('user')
             .doc(userCredential.user.uid)
             .set({
           'user_name': userName,
           'password': password,
+          "image_url": url,
         });
       }
     } on FirebaseAuthException catch (e) {
@@ -82,6 +100,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -92,34 +111,38 @@ class _AuthScreenState extends State<AuthScreen> {
                 Container(
                   height: MediaQuery.of(context).size.height * 0.5,
                   decoration: BoxDecoration(
-                    color: Colors.lightBlue,
+                    color: Color(0xffFB5A34),
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(70),
                       bottomRight: Radius.circular(70),
                     ),
                   ),
                 ),
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 50,
-                    ),
-                    TextLiquidFill(
-                      text: 'Hello!',
-                      waveColor: Colors.white,
-                      boxBackgroundColor: Colors.lightBlue,
-                      textStyle: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                if (widget.authType == AuthType.login)
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: 50,
                       ),
-                      boxHeight: 60.0,
-                    ),
-                    Image.asset('assets/images/logo.png'),
-                  ],
-                ),
+                      TextLiquidFill(
+                        text: 'Hello!',
+                        waveColor: Colors.white,
+                        boxBackgroundColor: Color(0xffFB5A34),
+                        textStyle: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        boxHeight: 60.0,
+                      ),
+                      Image.asset('assets/images/logo.png'),
+                    ],
+                  ),
+                if (widget.authType == AuthType.register)
+                  UserImagePicker(_pickedImage),
               ],
             ),
-            AuthForm(widget.authType, loginRegister, _isLoading),
+            AuthForm(
+                widget.authType, _submitAuthForm, _isLoading, _userPickedImage),
           ],
         ),
       ),

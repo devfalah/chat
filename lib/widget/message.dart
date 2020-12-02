@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -15,10 +16,12 @@ class Messages extends StatelessWidget {
         builder: (ctx, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return SpinKitCircle(
-              color: Colors.lightBlue,
+              color: Color(0xffFB5A34),
             );
           }
           final docs = snapshot.data.docs;
+          final user = FirebaseAuth.instance.currentUser;
+
           return ListView.builder(
             itemCount: docs.length,
             itemBuilder: (ctx, index) {
@@ -26,10 +29,12 @@ class Messages extends StatelessWidget {
                 docs[index]['text'],
               );
               return ChatBubble(
-                isMe: index % 2 == 0 ? false : true,
+                isMe: docs[index]['userId'] == user.uid,
                 message: docs[index]['text'],
+                image: docs[index]['user_image'],
                 userName: docs[index]['user_name'],
-                time: docs[index]['created_add'].toString(),
+                // time: docs[index]['created_add'].toString(),
+                key: ValueKey(docs[index].documentID),
               );
             },
           );

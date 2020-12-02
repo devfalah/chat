@@ -21,9 +21,9 @@ class IntroScreen extends StatelessWidget {
                 color: Colors.white,
                 textColor: Colors.lightBlue,
                 onPressed: () async {
-                  SharedPreferences pref =
-                      await SharedPreferences.getInstance();
-                  pref.setBool("first", true);
+                  // SharedPreferences pref =
+                  //     await SharedPreferences.getInstance();
+                  // pref.setBool("first", true);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

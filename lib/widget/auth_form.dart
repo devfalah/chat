@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:firebase_app/screens/auth_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_app/screens/chat.dart';
@@ -9,8 +12,9 @@ class AuthForm extends StatefulWidget {
   final AuthType authType;
   final Function submit;
   final bool isLoading;
+  final File _userPickedImage;
 
-  AuthForm(this.authType, this.submit, this.isLoading);
+  AuthForm(this.authType, this.submit, this.isLoading, this._userPickedImage);
 
   @override
   _AuthFormState createState() => _AuthFormState();
@@ -93,28 +97,36 @@ class _AuthFormState extends State<AuthForm> {
             ),
             if (widget.isLoading)
               SpinKitThreeBounce(
-                color: Colors.lightBlue,
+                color: Color(0xffFB5A34),
               ),
             if (!widget.isLoading)
               Button(
                   text:
                       widget.authType == AuthType.login ? "Login" : "Register",
-                  color: Colors.lightBlue,
+                  color: Color(0xffFB5A34),
                   textColor: Colors.white,
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       FocusScope.of(context).unfocus();
-                      widget.submit(
+                      if (widget.authType == AuthType.register) if (widget
+                              ._userPickedImage ==
+                          null) {
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                            "Please pick an image",
+                          ),
+                          backgroundColor: Colors.red,
+                        ));
+                        return;
+                      }
+                      setState(() {});
+                      await widget.submit(
                         email: _email.trim(),
                         password: _password,
                         userName: _userName,
                         authType: widget.authType,
                         context: context,
-                      );
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (c) => ChatingScreen(),
-                        ),
+                        image: widget._userPickedImage,
                       );
                     }
                   }),

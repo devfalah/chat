@@ -13,29 +13,40 @@ class _ChatInputState extends State<ChatInput> {
       borderRadius: BorderRadius.circular(30),
       borderSide: BorderSide(color: Colors.transparent));
   String message = "";
-  void _sendMessage() async {
-    final user = FirebaseAuth.instance.currentUser;
-    final userName =
-        await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
+  _sendMessage() async {
+    try {
+      final User user = FirebaseAuth.instance.currentUser;
 
-    FocusScope.of(context).unfocus();
-    //Todo:
-    FirebaseFirestore.instance.collection('chat').add(
-      {
-        'text': message,
-        'created_add': Timestamp.now(),
-        'user_name': userName['user_name'],
-        'user_id': user.uid,
-      },
-    );
+      final userName = await FirebaseFirestore.instance
+          .collection('user')
+          .doc(user.uid)
+          .get();
+
+      FocusScope.of(context).unfocus();
+      await FirebaseFirestore.instance.collection('chat').add(
+        {
+          'text': message,
+          'created_add': Timestamp.now(),
+          'user_name': userName['user_name'],
+          'userId': user.uid,
+          "user_image": userName['image_url'],
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
+
     _controller.clear();
+    setState(() {
+      message = "";
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xff0C0C14),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -53,19 +64,20 @@ class _ChatInputState extends State<ChatInput> {
           Container(
             child: IconButton(
               icon: Icon(Icons.insert_emoticon),
-              color: Colors.grey,
+              color: Colors.white,
               onPressed: () {},
             ),
           ),
           Expanded(
             child: TextField(
+              style: TextStyle(color: Colors.white),
               controller: _controller,
               keyboardType: TextInputType.multiline,
               autofocus: false,
               decoration: InputDecoration(
                   hintText: 'Please enter the message',
                   hintStyle: TextStyle(
-                    color: Colors.grey,
+                    color: Colors.white,
                     fontSize: 16,
                   ),
                   enabledBorder: border,
@@ -82,12 +94,12 @@ class _ChatInputState extends State<ChatInput> {
           Container(
             margin: const EdgeInsets.only(left: 5, right: 5),
             child: RawMaterialButton(
-              onPressed: message.trim().isEmpty ? null : _sendMessage,
+              onPressed: _sendMessage,
               child: Icon(
                 Icons.send,
                 color: Colors.white,
               ),
-              fillColor: Theme.of(context).accentColor,
+              fillColor: Color(0xffFB5A34),
               shape: CircleBorder(),
               elevation: 0.0,
             ),
