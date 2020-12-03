@@ -27,7 +27,7 @@ You can watch the tutorial on YouTube yo know how to build these screens and to 
 
 ![](screen/photo_2020-12-03_08-15-19.jpg) 
 
-![](media/preview.gif)
+)
 
 ## Language & Framework
 * Dart
