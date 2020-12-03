@@ -23,9 +23,9 @@ You can watch the tutorial on YouTube yo know how to build these screens and to 
 * [ ] Password Reset
 * [ ] Email Verification
 
-## Preview (Screens & Gif)
+## Preview ( Login Screens)
 
-![](screens/photo_2020-12-03_08-15-19.jpg) 
+![](screens/login.png) 
 
 
 
