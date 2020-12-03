@@ -45,7 +45,7 @@ You can watch the tutorial on YouTube yo know how to build these screens and to 
 3. Open this project on Android Studio or Visual studio code (or any IDE you use to develop flutter apps).
 4. Run the app on the emulator or simulator.
 5. Edit and add what you want.
-For sure, your pull requests is welcomed. 😃 
+For sure, your pull requests is welcomed. ❤
 
 ## Running the project with Firebase
 To use this project with Firebase authentication, some configuration steps are required.
