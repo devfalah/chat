@@ -1,10 +1,8 @@
 # Chat-App-With-Amazing-UI-Flutter
 It's an amazing UI for (Intro, Login &amp; Register,Chat) screens. In addition, it has full authentication using Firebase Authentication.
 
-## Tutorial
-You can watch the tutorial on YouTube yo know how to build these screens and to link them with Firebase Authentication.
 
-[![Flutter Tutorials - Build intro, login & Register screens using Firebase](media/preview-login.jpg)](https://youtu.be/VGfhfRfkxdg)
+
 
 ## Don't forget to star the project :star: and fork it to start coding with it.
 
